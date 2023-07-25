@@ -1,0 +1,25 @@
+{
+    "id": "AD6CD87B",
+    "path": null,
+    "project_path": null,
+    "type": "r_code_browser",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1690243365383.0,
+    "source_on_save": false,
+    "relative_order": 7,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "context": ".GlobalEnv:::gisu2reserve"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1690183502,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1690243365383,
+    "read_only": false,
+    "read_only_alternatives": []
+}
