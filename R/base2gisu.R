@@ -14,6 +14,16 @@ base2gisu  <- function(base3, r) {
   library(reshape2)
   library(fmsb)
   library(factorial2x2)
+
+  round2 = function(x, digits) {
+    posneg = sign(x)
+    z = abs(x)*10^digits
+    z = z + 0.5 + sqrt(.Machine$double.eps)
+    z = trunc(z)
+    z = z/10^digits
+    z*posneg
+  }
+
   # 기본정보
   base3[base3==""] = NA
   col_base2gisu <- base3 %>% head(1) %>% select(-contains(c("f", "Q", "q"))) %>% colnames
