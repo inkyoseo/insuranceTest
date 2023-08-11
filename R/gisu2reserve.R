@@ -15,7 +15,7 @@ gisu2reserve  <- function(기수표, exp) {기수표 %>%
       # 기준 연납순보험료 구송요소
       납입기간 = min(납입기간),
       MxMx_s = list(Mx[t==0] - Mx[t==보험기간]),
-      NNxNNx_s =list(NNx[t==0] - NNx[t==pmin(납입기간,20)]),
+      NNxNNx_s =list(NNx[t==0] - NNx[t==pmin(보험기간,20)]),
 
       # 순보험료 구성요소
       NxNx_납후 = list(Nx[t==납입기간] - Nx[t==보험기간]),
