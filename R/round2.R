@@ -1,13 +1,14 @@
 #' Title
 #'
-#' @param x numeric value
 #' @param digits
+#' @param x
 #'
-#' @return number
+#' @return
 #' @export
 #'
 #' @examples
-function(x, digits) {
+
+round2 <- function(x, digits) {
   posneg = sign(x)
   z = abs(x)*10^digits
   z = z + 0.5 + sqrt(.Machine$double.eps)
