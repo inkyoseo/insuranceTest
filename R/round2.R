@@ -1,3 +1,12 @@
+#' Title
+#'
+#' @param x numeric value
+#' @param digits
+#'
+#' @return number
+#' @export
+#'
+#' @examples
 function(x, digits) {
   posneg = sign(x)
   z = abs(x)*10^digits
