@@ -110,7 +110,7 @@ gisu2prem   <- function(기수표, exp) {
     select(-contains("베타")) %>%
     mutate_if(is.numeric, round) %>%
     mutate(across(c(where(is.character), -contains(c("유형", "기준"))), as.numeric)) %>% # 아래 항목 제외한 나머지 반올림
-    mutate(across(c(!is.na, -contains("유형"), contains(c("보험료", "S값", "표준해약공제액"))), as.numeric))
+  # mutate(across(c(!is.na, -contains("유형"), contains(c("보험료", "S값", "표준해약공제액"))), as.numeric))
   #mutate(across(contains("보험료"), as.numeric)) %>% # 정기보험료 및 기준연납순보험료 숫자화
   # mutate(across(contains("S값"), as.numeric)) %>% # S값 숫자화
   # mutate(across(contains("표준해약공제액"), as.numeric)) # 표준해약공제액 숫자화
