@@ -108,7 +108,7 @@ gisu2prem   <- function(기수표, exp) {
     select(seq, all_of(col_gisu2prem), contains("보험료"), S값A, 표준해약공제액_단일률) %>%
     #select(seq, 코드, 단일률구분, 급수, 차량용도, 성별구분, 만기종류, 보험기간, 납입기간, 기타코드, 보상한도, 연세만기구분, 보험가입금액, 나이, contains("보험료"), S값A, 표준해약공제액_단일률) %>%
     select(-contains("베타")) %>%
-    mutate(across(c(where(is.character), -contains("유형")), is.numeric)) %>% # 아래 항목 제외한 나머지 반올림
+    mutate(across(c(where(is.character), -contains("유형")), is.numeric)) # 아래 항목 제외한 나머지 반올림
    # mutate(across(contains("보험료"), as.numeric)) %>% # 정기보험료 및 기준연납순보험료 숫자화
    # mutate(across(contains("S값"), as.numeric)) %>% # S값 숫자화
    # mutate(across(contains("표준해약공제액"), as.numeric)) # 표준해약공제액 숫자화
