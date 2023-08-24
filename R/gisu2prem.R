@@ -9,35 +9,39 @@
 #' @examples
 gisu2prem   <- function(기수표, exp) {
 
-  col_gisu2prem <- 기수표 %>% head(1) %>% select(-contains(c("f", "Q", "q", "D", "N", "C", "M", "t", "나이"))) %>% colnames
+  col_gisu2prem <- 기수표 %>% data.frame() %>% head(1) %>% select(seq:t, -seq, -t) %>% colnames()
+  #col_gisu2prem <- 기수표 %>% head(1) %>% select(-contains(c("f", "Q", "q", "D", "N", "C", "M", "t", "나이"))) %>% colnames
 
   기수표 %>%
-    #        filter(seq %in% c(1)) %>%
+    #       filter(seq %in% c(1)) %>%
     group_by(seq) %>%
     summarise(
+
+      across(col_gisu2prem, first),
+
       # 기준 연납순보험료 구송요소
-      단일률구분 = min(단일률구분),
-      across(any_of(col_gisu2prem), min),
-      납입기간 = min(납입기간),
-      보상한도 = min(보상한도),
-      보험기간 = min(보험기간),
+      #            담보명 = first(담보명),
+      #           유형 = first(유형),
+      #          단일률구분 = min(단일률구분),
+      #         납입기간 = min(납입기간),
+      #        보상한도 = min(보상한도),
+      #       보험기간 = min(보험기간),
       MxMx_s = list(Mx[t==0] - Mx[t==보험기간]),
       NNxNNx_s =list(NNx[t==0] - NNx[t==pmin(보험기간,20)]),
 
       # 정기월납순보험료 구성요소 #
-      코드 = min(코드),
-      급수 = min(급수),
-      차량용도 = min(차량용도),
-      성별구분 = min(성별구분),
-      나이 = min(나이),
-      만기종류 = min(만기종류),
-      기타코드 = min(기타코드),
-      연세만기구분 = min(연세만기.구분),
+      #            코드 = min(코드),
+      #           급수 = min(급수),
+      #          차량용도 = min(차량용도),
+      #         성별구분 = min(성별구분),
+      #        나이 = min(나이),
+      #       만기종류 = min(만기종류),
+      #      기타코드 = min(기타코드),
+      #     연세만기구분 = min(연세만기.구분),
       보험가입금액 = min(보험가입금액),
       DxDx_r = list(Dxr[t==0] - Dxr[t==납입기간]),
       MxMx_r = list(Mxr[t==0] - Mxr[t==보험기간]),
       NxNx_r =list(Nxr[t==0] - Nxr[t==납입기간]),
-      Dxr = list(Dxr[t==0]),
 
       # FPI (준비금 구송요소)
       FPI = list(Nx[t==납입기간] - Nx[t==보험기간]),
@@ -101,9 +105,11 @@ gisu2prem   <- function(기수표, exp) {
       표준해약공제액_단일률 = as.character(factorial2x2::roundDown(0.05*as.numeric(기준연납순보험료)*pmin(보험기간, 20) + 0.45*as.numeric(기준연납순보험료), 2))
 
     ) %>%
+    select(seq, all_of(col_gisu2prem), contains("보험료"), S값A, 표준해약공제액_단일률) %>%
     #select(seq, 코드, 단일률구분, 급수, 차량용도, 성별구분, 만기종류, 보험기간, 납입기간, 기타코드, 보상한도, 연세만기구분, 보험가입금액, 나이, contains("보험료"), S값A, 표준해약공제액_단일률) %>%
-    select(all_of(col_gisu2prem), contains("보험료"), S값A, 표준해약공제액_단일률) %>%
     select(-contains("베타")) %>%
-    mutate_if(is.numeric, round) %>%
-    mutate_if(is.character, as.numeric)
+    mutate(across(c(where(is.character), -contains("유형")), is.numeric)) %>% # 아래 항목 제외한 나머지 반올림
+   # mutate(across(contains("보험료"), as.numeric)) %>% # 정기보험료 및 기준연납순보험료 숫자화
+   # mutate(across(contains("S값"), as.numeric)) %>% # S값 숫자화
+   # mutate(across(contains("표준해약공제액"), as.numeric)) # 표준해약공제액 숫자화
 }

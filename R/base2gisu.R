@@ -15,14 +15,6 @@ base2gisu  <- function(base3, r) {
   library(fmsb)
   library(factorial2x2)
 
-  round2 = function(x, digits) {
-    posneg = sign(x)
-    z = abs(x)*10^digits
-    z = z + 0.5 + sqrt(.Machine$double.eps)
-    z = trunc(z)
-    z = z/10^digits
-    z*posneg
-  }
 
   # 기본정보
   base3[base3==""] = NA
@@ -32,10 +24,15 @@ base2gisu  <- function(base3, r) {
     sub("fo.", "", x)
   }
 
+  dda  <- function(n, r) {
+    v  <- 1/(1+r)
+    (1-v^n)/(1-v)
+  }
+
   base4  <- base3 %>%
     group_by(seq) %>%
     arrange(seq, 나이) %>%
-    mutate(t = row_number() - 1, .after = seq) %>%
+    mutate(t = row_number() - 1) %>%
 
     # fo.lx 산식 : qx
     mutate(across(.cols = contains("fo.l"), function(x) ifelse(is.na(x), 0, 1)*lag(cumprod(eval(parse(text = as.character(x)))), default = 1), .names = "{subfo(.col)}")) %>%
