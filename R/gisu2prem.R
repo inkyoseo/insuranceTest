@@ -48,13 +48,16 @@ gisu2prem   <- function(기수표, exp) {
       FPII = list(NNx[t==납입기간] - NNx[t==보험기간]),
 
       # 순보험료 구성요소
-      NxNx_납후 = list(Nx[t==납입기간] - Nx[t==보험기간]),
+
       NxNx = list(Nx[t==납입기간] - Nx[t==납입기간]),
       MxMx =  list(Mx[t==0] - Mx[t==보험기간]),
       DxDx = list(Dx[t==0] - Dx[t==보험기간]),
       DDxDDx = list(DDx[t==0] - DDx[t==납입기간]),
       NNxNNx = list(NNx[t==0] - NNx[t==납입기간]),
-      Dx = list(Dx[t==0])
+      Dx = list(Dx[t==0]),
+
+      # beta 순보험료 구성요소
+      NNxNNx_납후 = list(NNx[t==납입기간] - NNx[t==보험기간]),
     ) %>%
     merge(exp) %>%
 
@@ -79,11 +82,11 @@ gisu2prem   <- function(기수표, exp) {
       순보험료_월납 = ifelse(납입기간 == 0, 0, MxMx/NNxNNx_월납/12),
 
       ## beta 순보험료
-      베타순보험료_연납 = ifelse(납입기간 == 0, 순보험료_연납, 순보험료_연납 - (alphaPrime + betaPrime)*NxNx_납후/NNxNNx_연납),
-      베타순보험료_6월납 = ifelse(납입기간 == 0, 0, 순보험료_6월납 - (alphaPrime + betaPrime)*NxNx_납후/NNxNNx_6월납),
-      베타순보험료_3월납 = ifelse(납입기간 == 0, 0, 순보험료_3월납 - (alphaPrime + betaPrime)*NxNx_납후/NNxNNx_3월납),
-      베타순보험료_2월납 = ifelse(납입기간 == 0, 0, 순보험료_2월납 - (alphaPrime + betaPrime)*NxNx_납후/NNxNNx_2월납),
-      베타순보험료_월납 = ifelse(납입기간 == 0, 0, 순보험료_월납 - (alphaPrime + betaPrime)*NxNx_납후/NNxNNx_월납),
+      베타순보험료_연납 = ifelse(납입기간 == 0, 순보험료_연납, 순보험료_연납 + (alphaPrime + betaPrime)*NNxNNx_납후/NNxNNx_연납),
+      베타순보험료_6월납 = ifelse(납입기간 == 0, 0, 순보험료_6월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_6월납),
+      베타순보험료_3월납 = ifelse(납입기간 == 0, 0, 순보험료_3월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_3월납),
+      베타순보험료_2월납 = ifelse(납입기간 == 0, 0, 순보험료_2월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_2월납),
+      베타순보험료_월납 = ifelse(납입기간 == 0, 0, 순보험료_월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_월납),
 
       # 영업보험료
       영업보험료_연납 = ifelse(납입기간 == 0, 순보험료_연납/(1-alpha2-beta1-ce), 순보험료_연납/(1-beta1-ce-gamma -alpha2*Dx/NNxNNx_연납)),

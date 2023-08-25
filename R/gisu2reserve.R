@@ -7,7 +7,10 @@
 #' @export
 #'
 #' @examples
-gisu2reserve  <- function(기수표, exp) {기수표 %>%
+gisu2reserve  <- function(기수표, exp, r) {
+    v = 1/(1+r)
+
+    기수표 %>%
     #        filter(seq %in% c(1,2, 3)) %>%
     #        col_gisu2reserve <- 기수표 %>% head(1) %>% select(-contains(c("D", "N", "C", "M"))) %>% colnames
     group_by(seq) %>%
@@ -23,7 +26,10 @@ gisu2reserve  <- function(기수표, exp) {기수표 %>%
       MxMx =  list(Mx[t==0] - Mx[t==보험기간]),
       DxDx = list(Dx[t==0] - Dx[t==보험기간]),
       DDxDDx = list(DDx[t==0] - DDx[t==납입기간]),
-      NNxNNx = list(NNx[t==0] - NNx[t==납입기간])
+      NNxNNx = list(NNx[t==0] - NNx[t==납입기간]),
+      # beta 순보험료 구성요소
+      NNxNNx_납후 = list(NNx[t==납입기간] - NNx[t==보험기간])
+
     ) %>%
     merge(exp) %>%
 
@@ -47,13 +53,25 @@ gisu2reserve  <- function(기수표, exp) {기수표 %>%
       순보험료_2월납 = ifelse(납입기간 == 0, 0, MxMx/NNxNNx_2월납/6),
       순보험료_월납 = ifelse(납입기간 == 0, 0, MxMx/NNxNNx_월납/12),
 
+      ## beta 순보험료
+
+      베타순보험료_연납 = ifelse(납입기간 == 0, 순보험료_연납, 순보험료_연납 + (alphaPrime + betaPrime)*NNxNNx_납후/NNxNNx_연납),
+      베타순보험료_6월납 = ifelse(납입기간 == 0, 0, 순보험료_6월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_6월납),
+      베타순보험료_3월납 = ifelse(납입기간 == 0, 0, 순보험료_3월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_3월납),
+      베타순보험료_2월납 = ifelse(납입기간 == 0, 0, 순보험료_2월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_2월납),
+      베타순보험료_월납 = ifelse(납입기간 == 0, 0, 순보험료_월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_월납),
+
     ) %>%
     group_by(seq) %>%
     mutate(MtMx = Mx - last(Mx),
            NNtNNx = ifelse(납입기간<t, 0, NNx - nth(NNx, max(납입기간+1)))) %>%
     rowwise() %>%
     #mutate(Vx = ifelse(납입기간<t, MtMx/Dx, (MtMx - 순보험료_연납*(NNtNNx))/Dx))
-    mutate(Vt = (MtMx - 순보험료_연납*(NNtNNx))/Dx)
+    mutate(Vt = (MtMx - 순보험료_연납*(NNtNNx))/Dx) %>%
+    group_by(seq) %>%
+    mutate(위험보험료 = ifelse(t==보험기간, 0, 1)*(베타순보험료_연납 - (lead(Vt, default = 0)*v - Vt ))/12) %>%
+    mutate_if(is.numeric, round) %>%
+    filter(납입기간 != t)
 
   #            mutate(across(where(is.numeric), round, 8))    # 사용x
   #            mutate_if(is.numeric, round, 8)                # 사용x
