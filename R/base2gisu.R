@@ -55,7 +55,7 @@ base2gisu  <- function(base3, r) {
     mutate(Mxr = rev(cumsum(rev(Cxr))), .after = Cxr) %>%
     ############################################################################
 
-  arrange(성별구분, 차량용도, 보상한도) %>%
+ # arrange(성별구분, 차량용도, 보상한도) %>%
     group_by(seq) %>%
     select(seq, all_of(col_base2gisu), any_of(c("t")), starts_with(c("D", "N", "C", "M"))) # 사업비에 걸리는 구분자 및 기수표
   #  select(seq, 코드, 단일률구분, 급수, 차량용도, 유형, 보험기간, 납입기간, 급수, 성별구분, t, 나이, 만기종류, 보상한도, 기타코드, 연세만기.구분, 보험가입금액, starts_with(c("l", "D", "N", "C", "M"))) # 사업비에 걸리는 구분자 및 기수표
