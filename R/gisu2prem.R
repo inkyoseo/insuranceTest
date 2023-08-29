@@ -82,11 +82,20 @@ gisu2prem   <- function(기수표, exp) {
       순보험료_월납 = ifelse(납입기간 == 0, 0, MxMx/NNxNNx_월납/12),
 
       ## beta 순보험료
-      베타순보험료_연납 = ifelse(납입기간 == 0, 순보험료_연납, 순보험료_연납 + (alphaPrime + betaPrime)*NNxNNx_납후/NNxNNx_연납),
-      베타순보험료_6월납 = ifelse(납입기간 == 0, 0, 순보험료_6월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_6월납),
-      베타순보험료_3월납 = ifelse(납입기간 == 0, 0, 순보험료_3월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_3월납),
-      베타순보험료_2월납 = ifelse(납입기간 == 0, 0, 순보험료_2월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_2월납),
-      베타순보험료_월납 = ifelse(납입기간 == 0, 0, 순보험료_월납 + (cePrime + betaPrime)*NNxNNx_납후/NNxNNx_월납),
+      cePrime = tryCatch(cePrime,error = function(z) return(0)),
+      betaPrime = tryCatch(betaPrime,error = function(z) return(0)),
+      ce = tryCatch(ce,error = function(z) return(0)),
+      alpha2 = tryCatch(alpha2,error = function(z) return(0)),
+      gamma = tryCatch(gamma,error = function(z) return(0)),
+      alpha1 = tryCatch(alpha1,error = function(z) return(0)),
+      alphaPrime = tryCatch(alphaPrime,error = function(z) return(0)),
+      beta1 = tryCatch(beta1,error = function(z) return(0)),
+
+      베타순보험료_연납 = ifelse(납입기간 == 0, 순보험료_연납, 순보험료_연납 + (cePrime + alphaPrime + betaPrime)*NNxNNx_납후/NNxNNx_연납),
+      베타순보험료_6월납 = ifelse(납입기간 == 0, 0, 순보험료_6월납 + (cePrime + alphaPrime + betaPrime)*NNxNNx_납후/NNxNNx_6월납),
+      베타순보험료_3월납 = ifelse(납입기간 == 0, 0, 순보험료_3월납 + (cePrime + alphaPrime + betaPrime)*NNxNNx_납후/NNxNNx_3월납),
+      베타순보험료_2월납 = ifelse(납입기간 == 0, 0, 순보험료_2월납 + (cePrime + alphaPrime + betaPrime)*NNxNNx_납후/NNxNNx_2월납),
+      베타순보험료_월납 = ifelse(납입기간 == 0, 0, 순보험료_월납 + (cePrime + alphaPrime + betaPrime)*NNxNNx_납후/NNxNNx_월납),
 
       # 영업보험료
       영업보험료_연납 = ifelse(납입기간 == 0, 순보험료_연납/(1-alpha2-beta1-ce), 순보험료_연납/(1-beta1-ce-gamma -alpha2*Dx/NNxNNx_연납)),
