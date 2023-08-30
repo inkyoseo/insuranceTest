@@ -80,7 +80,7 @@ gisu2reserve  <- function(기수표, exp, r) {
     mutate(Vt = (MtMx - 순보험료_연납*(NNtNNx))/Dx) %>%
     group_by(seq) %>%
     mutate(위험보험료 = ifelse(t==보험기간, 0, 1)*(베타순보험료_연납 - (lead(Vt, default = 0)*v - Vt ))/12) %>%
-    mutate_if(is.numeric, round) %>%
+#    mutate_if(is.numeric, round) %>%
     filter(납입기간 != t)
 
   #            mutate(across(where(is.numeric), round, 8))    # 사용x
