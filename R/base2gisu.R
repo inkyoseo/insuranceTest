@@ -8,7 +8,7 @@
 #'
 #' @examples
 #'
-base2gisu  <- function(base3, r) {
+base2gisu  <- function(base3, r, simdo_lim) {
   library(data.table)
   library(dplyr)
   library(reshape2)
@@ -39,7 +39,7 @@ base2gisu  <- function(base3, r) {
 
     # fo.Cx 산식 : lx, qx, 보험가입금액, v^(t+0.5)의 선형관계
     mutate(Cx = rowSums(across(.cols = contains("fo.C"), function(x) ifelse(is.na(x), 0, 1)*eval(parse(text = as.character(x)))*(1+r)^(-t-0.5), .names = "{subfo(.col)}"), na.rm=T)) %>%
-    mutate(Cx = ifelse(Cx > 20 , Cx, Cx*보험가입금액)) %>%
+    mutate(Cx = ifelse(Cx > simdo_lim*(1+r)^(-t-0.5) , Cx, Cx*보험가입금액)) %>%
 
     mutate(Dx = lx*(1+r)^(-t)) %>%
     mutate(DDx = llx*(1+r)^(-t)) %>%
