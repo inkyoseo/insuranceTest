@@ -15,7 +15,6 @@ base2gisu  <- function(base3, r, simdo_lim) {
   library(fmsb)
   library(factorial2x2)
 
-
   # 기본정보
   base3[base3==""] = NA
   col_base2gisu <- base3 %>% head(1) %>% select(-contains(c("f", "Q", "q"))) %>% colnames
